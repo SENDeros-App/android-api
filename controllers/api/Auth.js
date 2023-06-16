@@ -72,11 +72,15 @@ controller.login = async (req, res) => {
 		}
 		//retorna el token 
 		return res.status(200).json({
-			token: token
+			token: token,
+			user: user.username,
+			rank: user.rank
 		});
+		
 	} catch (error) {
 		return res.status(500).json({
 			error: 'Internal server error'
+
 		});
 	}
 };
