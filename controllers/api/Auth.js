@@ -4,6 +4,8 @@ const { createToken } = require('../../utils/JWTUtils');
 const { generateRandomNumber } = require('../../utils/randomNumber');
 const sendEmail = require("../../utils/email/sendEmail");
 const bcrypt = require("bcrypt");
+const service = require('./../../services/User');
+const Alert = require('../../models/Alert');
 
 const bcryptSalt = process.env.BCRYPT_SALT || 10;
 const tokenExpiration = process.env.TOKEN_EXPIRATION || 600;
@@ -72,11 +74,14 @@ controller.login = async (req, res) => {
 		}
 		//retorna el token 
 		return res.status(200).json({
+			msg:"Inicio de sesión exitoso",
 			token: token,
-			user: user.username,
-			rank: user.rank
-		});
-		
+			user: {
+				name: user.username,
+				division: user.rank
+			}
+			
+		});		
 	} catch (error) {
 		return res.status(500).json({
 			error: 'Internal server error'
