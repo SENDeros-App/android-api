@@ -247,4 +247,24 @@ service.deleteOneByID = async (_id) => {
 		throw new Error('Internal Server Error');
 	}
 };
+service.filterByProximity = async (lat, lon) => {
+	let serviceResponse = {
+		success: true,
+		content: {}
+	  };
+	
+	  try {
+		const alerts = await AlertModel.find({ type: typeID }).populate('user', 'username _id').exec();
+	
+		serviceResponse.content = alerts;
+	
+		return serviceResponse;
+	  } catch (error) {
+		throw error;
+	  }
+
+}
+
+
+
 module.exports = service;

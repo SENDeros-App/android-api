@@ -20,4 +20,6 @@ router.get('/user', AlertController.findByUser);
 
 router.delete('/:_id', AlertController.deleteOneByID);
 
+router.get('/near', AlertController.filterByProximity);
+
 module.exports = router;

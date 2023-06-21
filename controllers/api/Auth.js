@@ -22,12 +22,18 @@ controller.register = async (req, res) => {
 	try {
 		const { username, email } = req.body;
 		//const photo = req.file.path;
-
 		//verifica si existe 
-		const userExists = await UserService.findOneByUsernameEmail(username, email);
+		const userExists = await UserService.findOneByUsername(username);
 		if (userExists.success) {
 			return res.status(409).json({
-				error: 'Usuario ya existe '
+				error: 'Usuario ya registrado '
+			});
+		}
+
+		const emailExists = await UserService.findOneByEmail(email);
+		if (emailExists.success) {
+			return res.status(409).json({
+				error: 'email ya registrado '
 			});
 		}
 		//registra
@@ -38,8 +44,8 @@ controller.register = async (req, res) => {
 		}
 		return res.status(201).json(userRegistered.content);
 	} catch (e) {
-		return res.status(500).json({
-			error: 'Internal Server Error'
+		return res.status(409).json({
+			error: 'telefonico ya registrado'
 		});
 	}
 };
