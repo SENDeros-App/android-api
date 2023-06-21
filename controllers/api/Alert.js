@@ -146,4 +146,33 @@ controller.findByType = async (req, res) => {
 		});
 	}
 };
+
+controller.filterByProximity = async (req, res) => {
+	const { lat = req.alert.latitud , lon = req.alert.longitud} = req.query;
+
+	try {
+		const alertasOrdenadas = await Alert.find({
+		  ubicacion: {
+			$near: {
+			  $geometry: {
+				type: 'Point',
+				coordinates: [parseFloat(lon), parseFloat(lat)],
+			  },
+			},
+		  },
+		});
+	
+		res.json(alertasOrdenadas);
+	  } catch (error) {
+		res.status(500).json({ error: 'Error al filtrar las alertas por proximidad.' });
+	  }
+
+
+};
+
+
+
+
+
+
 module.exports = controller;

@@ -134,7 +134,7 @@ service.register = async ({ username, email, password, name, phoneNumber }) => {
 };
 
 //encontrar usuario por email o username y lo devuelve 
-service.findOneByUsernameEmail = async (username, email) => {
+service.findOneByUsername = async (username) => {
 	let serviceResponse = {
 		success: true,
 		content: {}
@@ -142,7 +142,7 @@ service.findOneByUsernameEmail = async (username, email) => {
 
 	try {
 		const user = await UserModel.findOne({
-			$or: [{ username: username }, { email: email }]
+			$or: [{ username: username }]
 		}).exec();
 
 		if (!user) {
@@ -150,6 +150,34 @@ service.findOneByUsernameEmail = async (username, email) => {
 				success: false,
 				content: {
 					error: 'User not found!'
+				}
+			};
+		} else {
+			serviceResponse.content = user;
+		}
+
+		return serviceResponse;
+	} catch (e) {
+		throw new Error('Internal server error');
+	}
+};
+
+service.findOneByEmail = async (email) => {
+	let serviceResponse = {
+		success: true,
+		content: {}
+	};
+
+	try {
+		const user = await UserModel.findOne({
+			$or: [{ email: email }]
+		}).exec();
+
+		if (!user) {
+			serviceResponse = {
+				success: false,
+				content: {
+					error: 'email not found!'
 				}
 			};
 		} else {
