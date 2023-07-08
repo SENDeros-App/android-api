@@ -134,7 +134,7 @@ service.findOneByID = async (_id) => {
 	};
 
 	try {
-		const alert = await AlertModel.findById(_id).populate('user', 'username _id').exec();
+		const alert = await AlertTypeService.deleteOneByID(typeID) .populate('user', 'username _id').exec();
 
 		if (!alert) {
 			serviceResponse = {
