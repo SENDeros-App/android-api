@@ -1,0 +1,3 @@
+apps:
+  - script: ./bin/www             # Application's startup file name
+    instances: 1                    # Number of processes that must run in parallel, you can change this if you want

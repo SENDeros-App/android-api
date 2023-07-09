@@ -101,10 +101,10 @@ const service = {};
 			alertsCount: userPushedAlert.savedAlerts.length
 		}
 
-		if(userAlertsCount.alertsCount > 5 && userAlertsCount.alertsCount < 15) {
+		if(userAlertsCount.alertsCount > 50 && userAlertsCount.alertsCount < 75) {
 			myRank = 'Medium';
 		}
-		else if(userAlertsCount.alertsCount >= 15){
+		else if(userAlertsCount.alertsCount >= 76){
 			myRank = 'Pro';
 		}else{
 			myRank = userPushedAlert.rank;
