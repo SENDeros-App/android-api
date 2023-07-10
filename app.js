@@ -56,7 +56,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-const socketPort = 3000;
+const socketPort = 5000;
 server.listen(socketPort, () => {
   console.log('Servidor de sockets escuchando en el puerto', socketPort);
 });
