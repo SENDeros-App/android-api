@@ -2,7 +2,7 @@ const AlertService = require('../../services/Alert');
 const AlertTypeService = require('../../services/AlertType');
 const { verifyID } = require('../../utils/MongoUtils');
 const { verifyNumberType } = require('../../utils/MiscUtils');
-
+const Alert = require('../../models/Alert');
 const UserService = require('../../services/User');
 const controller = {};
 
@@ -33,6 +33,23 @@ controller.create = async (req, res) => {
 		});
 	}
 };
+
+controller.createFromSocket = async (data) => {
+	try {
+		const { longitud, latitud, type } = data;
+	
+		const newAlert = new Alert({
+		  longitud,
+		  latitud,
+		  type,
+		});
+	
+		const savedAlert = await newAlert.save();
+		console.log('Alerta creada:', savedAlert);
+	  } catch (error) {
+		console.error('Error al crear la alerta:', error);
+	  }
+  };
 
 controller.findAll = async (req, res) => {
 	const { page = 0, limit = 10 } = req.query;

@@ -6,6 +6,7 @@ var logger = require('morgan');
 const http = require('http');
 const socketIO = require('socket.io');
 const { connect } = require('./config/database');
+const AlertController = require('./controllers/api/Alert');
 
 var indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
@@ -25,7 +26,7 @@ io.on('connection', (socket) => {
     console.log('recibido',data)
     // Realiza las operaciones necesarias con la base de datos
     // utilizando la referencia 'db' obtenida anteriormente
-
+    AlertController.createFromSocket(data);
     // Emitir los marcadores actualizados a todos los clientes conectados
     io.emit('Marcadores', data);
     console.log('enviado', data)
