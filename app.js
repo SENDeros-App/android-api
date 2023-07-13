@@ -21,23 +21,30 @@ io.on('connection', (socket) => {
   //console.log(socket)
   console.log('Cliente conectado:', socket.id);
 
-
   //console.log(socket.on)
-  const axios = require('axios');
+  //const axios = require('axios');
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+  socket.on('Marcadores', (data) => {
+    console.log('Recibido:', data);
+  
+    /*datajson = JSON.parse(data.trim());
+    // Token de autenticación
+    var tokenF = datajson.token.replace(/\r?\n|\r/g, '');
+    const token = tokenF;
 
-/*
-  // Token de autenticación
-    const token1 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDkzNzlkY2Q5NjdhMGQyOTIwNzEyMjIiLCJpYXQiOjE2ODkyMDgxMTcsImV4cCI6MTY4OTI5NDUxN30.ZHR8R6vGKf61AVMY-1j9hz-kqBY7epVY4bSWxDM4v8A';
+       // Configurar los encabezados de la solicitud con el token de autenticación
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
 
-  // Configurar los encabezados de la solicitud con el token de autenticación
-  const headers = {
-    'Authorization': `Bearer ${token1}`
-  };
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
 
-   // Realizar la solicitud GET para obtener todas las alertas
-   axios.get('http://192.168.1.35:3000/api/alert', { headers })
+    // Realizar la solicitud GET para obtener todas las alertas
+   axios.get('http://10.149.10.2:3000/api/alert', { headers })
    .then(response => {
      const alerts = response.data; // Obtener las alertas de la respuesta
 
@@ -47,33 +54,20 @@ io.on('connection', (socket) => {
    .catch(error => {
      console.error('Error al obtener las alertas:', error);
    });
-*/
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
-  
 
-  socket.on('Marcadores', (data) => {
-    console.log('Recibido:', data);
-  
-    // Token de autenticación
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDkzNzlkY2Q5NjdhMGQyOTIwNzEyMjIiLCJpYXQiOjE2ODkyMDgxMTcsImV4cCI6MTY4OTI5NDUxN30.ZHR8R6vGKf61AVMY-1j9hz-kqBY7epVY4bSWxDM4v8A';
-  
-    // Configurar los encabezados de la solicitud con el token de autenticación
-    const headers = {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    };
-  
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // Realizar la solicitud POST a la dirección deseada
-    axios.post('http://192.168.1.35:3000/api/alert', data, { headers })
+    axios.post('http://10.149.10.2:3000/api/alert', data, { headers })
       .then(response => {
-        console.log('Respuesta recibida:', response.data);
+        //console.log('Respuesta recibida:', response.data);
         // Si deseas emitir la respuesta a través del socket
         socket.emit('RespuestaMarcadores', response.data);
       })
       .catch(error => {
         console.error('Error al hacer la solicitud POST:', error);
       });
+      */
   
     socket.emit('Marcadores', data);
     console.log('Enviado:', data);

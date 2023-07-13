@@ -21,7 +21,8 @@ controller.create = async (req, res) => {
 			});
 		}
 		
-		const createAlert = await AlertService.create(req.body.latitud, req.body.longitud, req.body.type , user._id);
+		const createAlert = await AlertService.create(req.body.latitud, req.body.longitud, req.body.type , 
+			user._id , req.body.name);
 		if (!createAlert.success) {
 			return res.status(409).json(createAlert.content);
 		}
@@ -34,25 +35,9 @@ controller.create = async (req, res) => {
 	}
 };
 
-controller.createFromSocket = async (data) => {
-	try {
-		const { longitud, latitud, type } = data;
-	
-		const newAlert = new Alert({
-		  longitud,
-		  latitud,
-		  type,
-		});
-	
-		const savedAlert = await newAlert.save();
-		console.log('Alerta creada:', savedAlert);
-	  } catch (error) {
-		console.error('Error al crear la alerta:', error);
-	  }
-  };
 
 controller.findAll = async (req, res) => {
-	const { page = 0, limit = 10 } = req.query;
+	const { page = 0, limit = 1000 } = req.query;
 
 	if (!verifyNumberType(page, limit)) {
 		return res.status(400).json({

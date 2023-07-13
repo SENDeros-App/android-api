@@ -4,7 +4,7 @@ const AlertTypeService = require('./AlertType');
 const service = {};
 
 //Verificacion
- service.verifyCreateFields = ({ latitud, longitud, type}) => {
+ service.verifyCreateFields = ({ latitud, longitud, type, name}) => {
     let serviceResponse = {
 		success: true,
 		content: {
@@ -45,12 +45,23 @@ const service = {};
 		return serviceResponse;
 	}
 
+	if (!name) {
+		serviceResponse = {
+			success: false,
+			content: {
+				error: 'latitud is required'
+			}
+		};
+
+		return serviceResponse;
+	}
+
     return serviceResponse;
  };
     
  /**Crear alerta */
 
- service.create = async (latitud, longitud, typeID, userID) => {
+ service.create = async (latitud, longitud, typeID, userID, name) => {
 	let serviceResponse = {
 		success: true,
 		content: {
@@ -76,7 +87,8 @@ const service = {};
 			latitud,
 			longitud,
 			type: typeID,
-			user: userID
+			user: userID,
+			name
 		});
 
 		const alertSaved = await alert.save();
