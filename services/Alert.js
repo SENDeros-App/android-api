@@ -202,36 +202,41 @@ service.findAllByTypeID = async (typeID) => {
 /**Encontrar todas las alertas */
 service.findAll = async (page, limit) => {
 	let serviceResponse = {
-		success: true,
-		content: {}
+	  success: true,
+	  content: {}
 	};
-
+  
 	try {
-		const alerts = await AlertModel.find({}, undefined, {
-			skip: page * limit,
-			limit: limit,
-			sort: [
-				{
-					createdAt: -1
-				}
-			]
+	  const alerts = await AlertModel.find({}, '-_id latitud longitud type name')
+		.sort({ createdAt: -1 })
+		.skip(page * limit)
+		.limit(limit)
+		.populate({
+		  path: 'user',
+		  select: 'username -_id'
 		})
-			.populate('user', 'username _id')
-			//.populate({ path: 'type', select: 'name' })
-			.exec();
-
-		serviceResponse.content = {
-			alerts,
-			count: alerts.length,
-			page,
-			limit
+		.exec();
+  
+	  const simplifiedAlerts = alerts.map(alert => {
+		return {
+		  latitud: alert.latitud,
+		  longitud: alert.longitud,
+		  type: alert.type,
+		  name: alert.name,
+		  user: alert.user.username
 		};
-
-		return serviceResponse;
+	  });
+  
+	  serviceResponse.content = simplifiedAlerts;
+	  return serviceResponse;
 	} catch (error) {
-		throw error;
+	  throw error;
 	}
-};
+  };
+  
+  
+  
+  
 
 /**Elimianr una alerta por su id */
 service.deleteOneByID = async (_id) => {
