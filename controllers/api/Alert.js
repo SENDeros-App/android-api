@@ -2,7 +2,7 @@ const AlertService = require('../../services/Alert');
 const AlertTypeService = require('../../services/AlertType');
 const { verifyID } = require('../../utils/MongoUtils');
 const { verifyNumberType } = require('../../utils/MiscUtils');
-
+const Alert = require('../../models/Alert');
 const UserService = require('../../services/User');
 const controller = {};
 
@@ -21,7 +21,8 @@ controller.create = async (req, res) => {
 			});
 		}
 		
-		const createAlert = await AlertService.create(req.body.latitud, req.body.longitud, req.body.type , user._id);
+		const createAlert = await AlertService.create(req.body.latitud, req.body.longitud, req.body.type , 
+			user._id , req.body.name);
 		if (!createAlert.success) {
 			return res.status(409).json(createAlert.content);
 		}
@@ -34,8 +35,9 @@ controller.create = async (req, res) => {
 	}
 };
 
+
 controller.findAll = async (req, res) => {
-	const { page = 0, limit = 10 } = req.query;
+	const { page = 0, limit = 1000 } = req.query;
 
 	if (!verifyNumberType(page, limit)) {
 		return res.status(400).json({
@@ -146,4 +148,33 @@ controller.findByType = async (req, res) => {
 		});
 	}
 };
+
+controller.filterByProximity = async (req, res) => {
+	const { lat = req.alert.latitud , lon = req.alert.longitud} = req.query;
+
+	try {
+		const alertasOrdenadas = await Alert.find({
+		  ubicacion: {
+			$near: {
+			  $geometry: {
+				type: 'Point',
+				coordinates: [parseFloat(lon), parseFloat(lat)],
+			  },
+			},
+		  },
+		});
+	
+		res.json(alertasOrdenadas);
+	  } catch (error) {
+		res.status(500).json({ error: 'Error al filtrar las alertas por proximidad.' });
+	  }
+
+
+};
+
+
+
+
+
+
 module.exports = controller;

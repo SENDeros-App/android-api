@@ -12,12 +12,14 @@ router.post('/', AlertController.create);
 
 router.get('/', AlertController.findAll);
 
-router.get('/id/:_id', AlertController.findOneByID);
+router.get('/type/:type', AlertController.findOneByID);
 
-router.get('/type/:_id', AlertController.findByType);
+router.get('/type/:type', AlertController.findByType);
 
 router.get('/user', AlertController.findByUser);
 
 router.delete('/:_id', AlertController.deleteOneByID);
+
+router.get('/near', AlertController.filterByProximity);
 
 module.exports = router;

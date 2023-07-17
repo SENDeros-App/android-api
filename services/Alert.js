@@ -4,7 +4,7 @@ const AlertTypeService = require('./AlertType');
 const service = {};
 
 //Verificacion
- service.verifyCreateFields = ({ latitud, longitud, type}) => {
+ service.verifyCreateFields = ({ latitud, longitud, type, name}) => {
     let serviceResponse = {
 		success: true,
 		content: {
@@ -45,12 +45,23 @@ const service = {};
 		return serviceResponse;
 	}
 
+	if (!name) {
+		serviceResponse = {
+			success: false,
+			content: {
+				error: 'latitud is required'
+			}
+		};
+
+		return serviceResponse;
+	}
+
     return serviceResponse;
  };
     
  /**Crear alerta */
 
- service.create = async (latitud, longitud, typeID, userID) => {
+ service.create = async (latitud, longitud, typeID, userID, name) => {
 	let serviceResponse = {
 		success: true,
 		content: {
@@ -76,7 +87,8 @@ const service = {};
 			latitud,
 			longitud,
 			type: typeID,
-			user: userID
+			user: userID,
+			name
 		});
 
 		const alertSaved = await alert.save();
@@ -134,7 +146,7 @@ service.findOneByID = async (_id) => {
 	};
 
 	try {
-		const alert = await AlertModel.findById(_id).populate('user', 'username _id').exec();
+		const alert = await AlertTypeService.deleteOneByID(typeID) .populate('user', 'username _id').exec();
 
 		if (!alert) {
 			serviceResponse = {
@@ -190,36 +202,41 @@ service.findAllByTypeID = async (typeID) => {
 /**Encontrar todas las alertas */
 service.findAll = async (page, limit) => {
 	let serviceResponse = {
-		success: true,
-		content: {}
+	  success: true,
+	  content: {}
 	};
-
+  
 	try {
-		const alerts = await AlertModel.find({}, undefined, {
-			skip: page * limit,
-			limit: limit,
-			sort: [
-				{
-					createdAt: -1
-				}
-			]
+	  const alerts = await AlertModel.find({}, '-_id latitud longitud type name')
+		.sort({ createdAt: -1 })
+		.skip(page * limit)
+		.limit(limit)
+		.populate({
+		  path: 'user',
+		  select: 'username -_id'
 		})
-			.populate('user', 'username _id')
-			//.populate({ path: 'type', select: 'name' })
-			.exec();
-
-		serviceResponse.content = {
-			alerts,
-			count: alerts.length,
-			page,
-			limit
+		.exec();
+  
+	  const simplifiedAlerts = alerts.map(alert => {
+		return {
+		  latitud: alert.latitud,
+		  longitud: alert.longitud,
+		  type: alert.type,
+		  name: alert.name,
+		  user: alert.user.username
 		};
-
-		return serviceResponse;
+	  });
+  
+	  serviceResponse.content = simplifiedAlerts;
+	  return serviceResponse;
 	} catch (error) {
-		throw error;
+	  throw error;
 	}
-};
+  };
+  
+  
+  
+  
 
 /**Elimianr una alerta por su id */
 service.deleteOneByID = async (_id) => {
@@ -247,4 +264,24 @@ service.deleteOneByID = async (_id) => {
 		throw new Error('Internal Server Error');
 	}
 };
+service.filterByProximity = async (lat, lon) => {
+	let serviceResponse = {
+		success: true,
+		content: {}
+	  };
+	
+	  try {
+		const alerts = await AlertModel.find({ type: typeID }).populate('user', 'username _id').exec();
+	
+		serviceResponse.content = alerts;
+	
+		return serviceResponse;
+	  } catch (error) {
+		throw error;
+	  }
+
+}
+
+
+
 module.exports = service;
