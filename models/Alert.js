@@ -13,7 +13,7 @@ const AlertSchema = new Schema(
 			required: true
 		},
 		type: {
-			type: mongoose.Schema.Types.ObjectId,
+			type: String,
 			ref: 'AlertType',
 			required: true
 		},
@@ -21,6 +21,10 @@ const AlertSchema = new Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
 			required: true
+		},
+		name:{
+			type: String,
+			required: true 
 		}
 	},
 	{
